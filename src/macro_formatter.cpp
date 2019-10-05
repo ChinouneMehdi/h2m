@@ -118,14 +118,16 @@ string MacroFormatter::getFortranMacroASString() {
             string val = macroVal.substr(x+1);  // val is a mutable temporary
             // Strip val down to its pure hexadecimal digits.
             val = CToFTypeFormatter::GroomHexType(val);
-            fortranMacro += actual_macroName + " = Z\'" + val + "\'\n";
+            fortranMacro += actual_macroName + " = INT( Z\'" + val + "\', "
+            + type_specifier + ")\n";
           // Handle a binary constant (0B or 0b is discovered in the number)
           } else if (CToFTypeFormatter::isBinary(macroVal) == true) {
             size_t b = macroVal.find_last_of("bB");
             string val = macroVal.substr(b+1);
             // Remove questionable characters from the number.
             val = CToFTypeFormatter::GroomIntegerType(val);
-            fortranMacro += actual_macroName + " = B\'" + val + "\'\n";
+            fortranMacro += actual_macroName + " = INT( B\'" + val + "\', "
+            + type_specifier + ")\n";
           // We have found an octal number: 0#### but not just '0'.
           } else if (CToFTypeFormatter::isOctal(macroVal) == true) {
             string val = macroVal;
@@ -133,7 +135,8 @@ string MacroFormatter::getFortranMacroASString() {
             val.erase(val.begin(), val.begin() + 1);
             // Remove questionable characters from the number.
             val = CToFTypeFormatter::GroomIntegerType(val);
-            fortranMacro += actual_macroName + " = O\'" + val + "\'\n";
+            fortranMacro += actual_macroName + " = INT( O\'" + val + "\', "
+            + type_specifier + ")\n";
           } else {  // This is some other kind of integer like number.
             string val = macroVal;  // Create a mutable temporary string.
             // Remove questionable characters from the number.
