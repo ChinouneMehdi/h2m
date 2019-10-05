@@ -93,10 +93,10 @@ string MacroFormatter::getFortranMacroASString() {
       // analyze the macro's type and translate as appropriate
       if (!macroVal.empty()) {
         if (CToFTypeFormatter::isString(macroVal)) {
-          fortranMacro = "CHARACTER("+ to_string(macroVal.size()-2)+
+          fortranMacro = "  CHARACTER("+ to_string(macroVal.size()-2)+
               "), parameter, public :: " + actual_macroName + " = " + macroVal + "\n";
         } else if (CToFTypeFormatter::isChar(macroVal)) {
-          fortranMacro = "CHARACTER("+ to_string(macroVal.size()-2)+
+          fortranMacro = "  CHARACTER("+ to_string(macroVal.size()-2)+
               "), parameter, public :: "+ macroName + " = " + macroVal + "\n";
         } else if (CToFTypeFormatter::isIntLike(macroVal)) {
           // Will hold the type_needed of INTEGER(type_needed), parameter...
@@ -111,7 +111,7 @@ string MacroFormatter::getFortranMacroASString() {
             return macroDef;  // We can skip the name and line checks down below.
           }
           // Build up the part of the macro we already know
-          fortranMacro = "INTEGER(" + type_specifier + "), parameter, public :: ";
+          fortranMacro = "  INTEGER(" + type_specifier + "), parameter, public :: ";
           // Handle hexadecimal constants (0x or 0X is discovered in the number)
           if (CToFTypeFormatter::isHex(macroVal) == true) {
             size_t x = macroVal.find_last_of("xX");
@@ -158,7 +158,7 @@ string MacroFormatter::getFortranMacroASString() {
           }
           // Remove questionable characters from the decimal.
           string val = CToFTypeFormatter::GroomFloatingType(macroVal);
-          fortranMacro = "REAL(" + type_specifier + "), parameter, public :: " +
+          fortranMacro = "  REAL(" + type_specifier + "), parameter, public :: " +
               actual_macroName + " = " + val + "_" + type_specifier + "\n";
         // Be aware that this may create multiline macros. All others
         // created here will be single line macros, so this can be a
@@ -176,7 +176,7 @@ string MacroFormatter::getFortranMacroASString() {
           return macroDef;  // We can skip the name and line checks down below.
         }
       } else { // The macro is empty, so, make the object a bool positive
-        fortranMacro = "INTEGER(C_INT), parameter, public :: "+ actual_macroName  + " = 1\n";
+        fortranMacro = "  INTEGER(C_INT), parameter, public :: "+ actual_macroName  + " = 1\n";
       }
     } else {  // We are dealing with a function macro.
       // macroDef has the entire macro definition in it. Here the body of the macro
@@ -191,16 +191,16 @@ string MacroFormatter::getFortranMacroASString() {
       // Parse out the body from the definition.
       size_t rParen = macroDef.find(')');
       string functionBody = macroDef.substr(rParen+1, macroDef.size()-1);
-      fortranMacro = "INTERFACE\n";
+      fortranMacro = "  INTERFACE\n";
 #if CLANG_VERSION_MAJOR < 5
 #define param_empty arg_empty
 #define param_begin arg_begin
 #define param_end arg_end
 #endif
       if (md->getMacroInfo()->param_empty()) {
-        fortranMacro += "SUBROUTINE "+ actual_macroName + "() BIND(C)\n";
+        fortranMacro += "    SUBROUTINE "+ actual_macroName + "() BIND(C)\n";
       } else {
-        fortranMacro += "SUBROUTINE "+ actual_macroName + "(";
+        fortranMacro += "    SUBROUTINE "+ actual_macroName + "(";
         for (auto it = md->getMacroInfo()->param_begin (); it !=
             md->getMacroInfo()->param_end (); it++) {
           // Assemble the macro arguments in a list and check names for illegal underscores. 
@@ -228,8 +228,8 @@ string MacroFormatter::getFortranMacroASString() {
           fortranMacro += "! " + line + "\n";
         }
       }
-      fortranMacro += "END SUBROUTINE " + actual_macroName + "\n";
-      fortranMacro += "END INTERFACE\n";
+      fortranMacro += "    END SUBROUTINE " + actual_macroName + "\n";
+      fortranMacro += "  END INTERFACE\n";
     }
 
     // Checks for illegal name lengths are done in one place. This is 

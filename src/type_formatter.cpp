@@ -820,7 +820,7 @@ string CToFTypeFormatter::createFortranType(const string macroName, const string
     temp_macro_name = "h2m" + macroName;
   }
 
-  ft_buffer = "TYPE, BIND(C) :: " + temp_macro_name + "\n";
+  ft_buffer = "  TYPE, BIND(C) :: " + temp_macro_name + "\n";
   if (macroVal.find("char") != std::string::npos) {
     ft_buffer += "    CHARACTER(C_CHAR) :: " + type_id + "\n";
   } else if (macroVal.find("long") != std::string::npos) {
@@ -830,7 +830,7 @@ string CToFTypeFormatter::createFortranType(const string macroName, const string
   } else {
     ft_buffer += "    INTEGER(C_INT) :: " + type_id + "\n";
   }
-  ft_buffer += "END TYPE " + temp_macro_name + "\n";
+  ft_buffer += "  END TYPE " + temp_macro_name + "\n";
 
   return ft_buffer;
 };

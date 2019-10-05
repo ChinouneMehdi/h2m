@@ -620,7 +620,7 @@ string VarDeclFormatter::getFortranVarDeclASString() {
         error_string = f_type + ", anonymous in struct.";
       }
       // Assemble the variable declaration, including the bindname if it exists.
-      vd_buffer += tf.getFortranTypeASString(true, problem) + ", public, BIND(C" + bindname;
+      vd_buffer += "  " + tf.getFortranTypeASString(true, problem) + ", public, BIND(C" + bindname;
       // Get the struct translation.
       vd_buffer +=  ") :: " + identifier + getFortranStructDeclASString(f_type) + "\n";
     } else if (varDecl->getType().getTypePtr()->isArrayType()) {
@@ -655,7 +655,7 @@ string VarDeclFormatter::getFortranVarDeclASString() {
       // Create the declaration in correspondence with this. Add in the bindname, which may be empty
       if (value.empty()) {  // The variable is not initialized.
         bool problem = false;  // The helper sets this flag to show status.
-        vd_buffer = tf.getFortranTypeASString(true, problem) + ", public, BIND(C" + bindname;
+        vd_buffer = "  " + tf.getFortranTypeASString(true, problem) + ", public, BIND(C" + bindname;
         vd_buffer +=  ") :: " + identifier + "\n";
         if (problem == true) {  // We've found an unrecognized type
           current_status = CToFTypeFormatter::BAD_TYPE;
@@ -663,7 +663,7 @@ string VarDeclFormatter::getFortranVarDeclASString() {
         }
       } else if (value[0] == '!') {  // I think this is now obsolete -Michelle
         bool problem = false;  // The helper will set this flag if it sees an illegal type.
-        vd_buffer = tf.getFortranTypeASString(true, problem) + ", public, BIND(C" + bindname;
+        vd_buffer = "  " + tf.getFortranTypeASString(true, problem) + ", public, BIND(C" + bindname;
         vd_buffer +=  + ") :: " + identifier + " " + value + "\n";
         if (problem == true) {  // We've found an unrecognized type
           current_status = CToFTypeFormatter::BAD_TYPE;
@@ -673,7 +673,7 @@ string VarDeclFormatter::getFortranVarDeclASString() {
         // A parameter may not have a bind(c) attribute.
         bool problem = false;  // The helper will set this flag if it sees an illegal type.
         // Recall taht a BIND attribute is illegal for a parameter.
-        vd_buffer = tf.getFortranTypeASString(true, problem) + ", parameter, public :: " +
+        vd_buffer = "  " + tf.getFortranTypeASString(true, problem) + ", parameter, public :: " +
             identifier + " = " + value + "\n";
         if (problem == true) {  // We've found an unrecognized type
           current_status = CToFTypeFormatter::BAD_TYPE;
@@ -697,7 +697,7 @@ string VarDeclFormatter::getFortranVarDeclASString() {
       // Include the bindname, which may be empty.
       if (value.empty()) {  // This is an actual variable, uninitialized.
         bool problem = false;  // The helper sets this flag if it sees an illegal type.
-        vd_buffer = tf.getFortranTypeASString(true, problem) + ", public, BIND(C" + bindname;
+        vd_buffer = "  " + tf.getFortranTypeASString(true, problem) + ", public, BIND(C" + bindname;
         vd_buffer += ") :: " + identifier + "\n";
         if (problem == true) {  // We've found an unrecognized type
           current_status = CToFTypeFormatter::BAD_TYPE;
@@ -705,7 +705,7 @@ string VarDeclFormatter::getFortranVarDeclASString() {
         }
       } else if (value[0] == '!') {  // This, again, appears to be obsolete -Michelle
         bool problem = false;
-        vd_buffer = tf.getFortranTypeASString(true, problem) + ", public, BIND(C" + bindname;
+        vd_buffer = "  " + tf.getFortranTypeASString(true, problem) + ", public, BIND(C" + bindname;
         vd_buffer += ") :: " + identifier + " " + value + "\n";
         if (problem == true) {  // We've found an unrecognized type
           current_status = CToFTypeFormatter::BAD_TYPE;
@@ -714,7 +714,7 @@ string VarDeclFormatter::getFortranVarDeclASString() {
       } else {  // This is an initialized variable to be treated as a parameter.
         // A parameter may not have a bind(c) attribute
         bool problem = false;
-        vd_buffer = tf.getFortranTypeASString(true, problem) + ", parameter, public :: " +
+        vd_buffer = "  " + tf.getFortranTypeASString(true, problem) + ", parameter, public :: " +
             identifier + " = " + value + "\n";
         if (problem == true) {  // We've found an unrecognized type
           current_status = CToFTypeFormatter::BAD_TYPE;

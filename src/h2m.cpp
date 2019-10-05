@@ -338,9 +338,9 @@ void TraverseNodeConsumer::HandleTranslationUnit(clang::ASTContext &Context) {
   // has kept track of functions in string form, waiting to
   // output them all at once.
   if (!Visitor.allFunctionDecls.empty()) {
-    args.getOutput().os() << "INTERFACE\n" 
+    args.getOutput().os() << "\n  INTERFACE\n\n" 
     << Visitor.allFunctionDecls
-    << "END INTERFACE\n";   
+    << "  END INTERFACE\n\n";   
   }
 }
 
@@ -355,9 +355,9 @@ bool TraverseNodeAction::BeginSourceFileAction(CompilerInstance &ci)
   // initalize Module and imports
   string beginSourceModule;
   beginSourceModule = "MODULE " + args.getModuleName() + "\n";
-  beginSourceModule += "USE, INTRINSIC :: iso_c_binding\n";
+  beginSourceModule += "  USE, INTRINSIC :: iso_c_binding\n";
   beginSourceModule += use_modules;
-  beginSourceModule += "implicit none\n";
+  beginSourceModule += "  implicit none\n";
   args.getOutput().os() << beginSourceModule;
 
   // Arrange for the preprocessor to record the definitions of macros.
@@ -513,14 +513,14 @@ int main(int argc, const char **argv) {
           // the option to link-all modules was specified, in which case connect it up
           // anyway.
           if (LinkAll == true) {
-            modules_list += "USE " + args.getModuleName() + "\n";
+            modules_list += "  USE " + args.getModuleName() + "\n";
           } else {
             modules_list += "! USE " + args.getModuleName() + "\n";
           }
           OutputFile.os()  << "! Warning: Translation Error Occurred on this module\n";
         } else {  // Successful run, no errors
           // Add USE statement to be included in future modules
-          modules_list += "USE " + args.getModuleName() + "\n";
+          modules_list += "  USE " + args.getModuleName() + "\n";
           if (Silent == false) {  // Don't clutter the screen if the run is silent
             errs() << "Successfully processed " << headerfile << "\n";
             errs() << "\n\n\n\n";  // Put four lines between files to help keep track of errors

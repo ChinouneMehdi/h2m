@@ -85,7 +85,7 @@ string TypedefDeclFormater::getFortranTypedefDeclASString() {
     }
     
     // Include the bindname, which may be empty, when assembling the definition.
-    typedef_buffer = "TYPE, BIND(C) :: " + identifier + "\n";
+    typedef_buffer = "  TYPE, BIND(C) :: " + identifier + "\n";
     // Because names in typedefs may collide with the typedef name, 
     // suffixes are appended to the internal member of the typedef.
     // This flag will indicate the presence of an unrecognized type.
@@ -104,7 +104,7 @@ string TypedefDeclFormater::getFortranTypedefDeclASString() {
       CToFTypeFormatter::LineError(sloc);
     }
     string modified_name = identifier + "_" + type_no_wrapper;
-    string to_add = "    " + type_wrapper_name + "::" + modified_name + "\n";
+    string to_add = "    " + type_wrapper_name + " :: " + modified_name + "\n";
     // Set the flag to reflect a bad name length if necessary
     if (modified_name.length() > CToFTypeFormatter::name_max) {
       current_status = CToFTypeFormatter::BAD_NAME_LENGTH;
@@ -117,7 +117,7 @@ string TypedefDeclFormater::getFortranTypedefDeclASString() {
       error_string = to_add;
     }
     typedef_buffer += to_add;
-    typedef_buffer += "END TYPE " + identifier + "\n";
+    typedef_buffer += "  END TYPE " + identifier + "\n";
     // Check to see whether we have declared something with this identifier before.
     bool not_repeat = RecordDeclFormatter::StructAndTypedefGuard(identifier); 
     if (not_repeat == false) {  // This indicates that this is a duplicate identifier.

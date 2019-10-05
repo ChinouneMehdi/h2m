@@ -116,7 +116,7 @@ string FunctionDeclFormatter::getParamsDeclASString() {
 
     // Array arguments must be handled diferently. They need the DIMENSION attribute.
     if (tf.isArrayType() == true) {
-      paramsDecl += "    " + tf.getFortranArrayArgASString(pname) + "\n";
+      paramsDecl += "      " + tf.getFortranArrayArgASString(pname) + "\n";
     } else {
       // In some cases parameter doesn't have a name in C, but must have one by
       //  the time we get here.
@@ -126,7 +126,7 @@ string FunctionDeclFormatter::getParamsDeclASString() {
         current_status = CToFTypeFormatter::BAD_TYPE;
         error_string = type_wrapped + ", parameter type.";
       }
-      paramsDecl += "    " + type_wrapped + ", value" + " :: " + pname + "\n";
+      paramsDecl += "      " + type_wrapped + ", value" + " :: " + pname + "\n";
       // need to handle the attribute later - Michelle doesn't know what this 
       // (original) commment means 
     }
@@ -214,11 +214,11 @@ string FunctionDeclFormatter::getFortranFunctDeclASString() {
     string bindname;  // This is used to link to a C function with a different name.
     // This determines what types to be included in the iso_c_binding.
     if (!paramsString.empty()) {
-      imports = "    USE iso_c_binding, only: " + getParamsTypesASString() + "\n";
+      imports = "      USE iso_c_binding, only: " + getParamsTypesASString() + "\n";
     } else {
-      imports = "    USE iso_c_binding\n";
+      imports = "      USE iso_c_binding\n";
     }
-    imports +="    import\n";
+    imports +="      import\n";
     
     // Check if the return type is void or not
     // A void type means we create a subroutine. Otherwise a function is written.
@@ -251,7 +251,7 @@ string FunctionDeclFormatter::getFortranFunctDeclASString() {
     }
     // Check to make sure this declaration line isn't too long. It well might be.
     // bindname may be empty or may contain a C function to link to.
-    fortranFunctDecl = funcType + " " + funcname + "(" + getParamsNamesASString() +
+    fortranFunctDecl = "    " + funcType + " " + funcname + "(" + getParamsNamesASString() +
         ")" + " BIND(C" + bindname + ")\n";
     // Add in the import from iso_c_binding and the parameters.
     fortranFunctDecl += imports;
@@ -280,9 +280,9 @@ string FunctionDeclFormatter::getFortranFunctDeclASString() {
     }
     // Close the function or subroutine as appropriate.
     if (returnQType.getTypePtr()->isVoidType()) {
-      fortranFunctDecl += "END SUBROUTINE " + funcname + "\n\n";   
+      fortranFunctDecl += "    END SUBROUTINE " + funcname + "\n\n";   
     } else {
-      fortranFunctDecl += "END FUNCTION " + funcname + "\n\n";
+      fortranFunctDecl += "    END FUNCTION " + funcname + "\n\n";
     }
    
     // The guard function checks for duplicate identifiers. This might 
