@@ -156,7 +156,7 @@ string MacroFormatter::getFortranMacroASString() {
           // Remove questionable characters from the decimal.
           string val = CToFTypeFormatter::GroomFloatingType(macroVal);
           fortranMacro = "REAL(" + type_specifier + "), parameter, public :: " +
-              actual_macroName + " = " + val + "\n";
+              actual_macroName + " = " + val + "_" + type_specifier + "\n";
         // Be aware that this may create multiline macros. All others
         // created here will be single line macros, so this can be a
         // surprise. This comes into play when someone types:
